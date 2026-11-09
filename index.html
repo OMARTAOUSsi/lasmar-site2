@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="author" content="Omar Taoussi">
+<meta name="description" content="LASMAR – Laboratoire de Spectrométrie des Matériaux et Archéomatériaux, URL-CNRST N°7, Faculté des Sciences, Université Moulay Ismaïl, Meknès">
+<title>LASMAR – UMI</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+body{margin:0}img{max-width:100%}[hidden]{display:none!important}
+/* Layout: sticky nav + hash-routed views; hero pairs lab identity with a live spectrum figure (XRF / EEM). Trilingual FR/EN/AR (RTL). */
+:root{
+  --bg:#f4f7f7; --surface:#ffffff; --ink:#0f2a30; --muted:#4f666b; --line:#d6e1e2;
+  --accent:#0b6e6c; --accent-soft:#dcefee; --ochre:#b8741f; --ochre-soft:#f6ead9;
+  --f-display:"Sora",system-ui,sans-serif; --f-body:"IBM Plex Sans",system-ui,sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --eem0:#f4f7f7; --eem1:#7cc6c1; --eem2:#0b6e6c; --eem3:#b8741f;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0c1a1d; --surface:#122428; --ink:#e3eeee; --muted:#9db3b6; --line:#24393d;
+  --accent:#4cc2bb; --accent-soft:#163b3c; --ochre:#e0a352; --ochre-soft:#3a2c18;
+  --eem0:#0c1a1d; --eem1:#1d5a5a; --eem2:#4cc2bb; --eem3:#e0a352; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1a1d; --surface:#122428; --ink:#e3eeee; --muted:#9db3b6; --line:#24393d;
+  --accent:#4cc2bb; --accent-soft:#163b3c; --ochre:#e0a352; --ochre-soft:#3a2c18;
+  --eem0:#0c1a1d; --eem1:#1d5a5a; --eem2:#4cc2bb; --eem3:#e0a352; color-scheme:dark}
+html[lang="ar"]{--f-display:"IBM Plex Sans Arabic","Sora",system-ui,sans-serif;--f-body:"IBM Plex Sans Arabic",system-ui,sans-serif}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6}
+html[lang="ar"] body{font-size:17px;line-height:1.75}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--ochre);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-display);line-height:1.25;text-wrap:balance;margin:0}
+h2{font-size:clamp(1.6rem,3vw,2.1rem)}
+h3{font-size:1.1rem}
+p{margin:0}
+.wrap{max-width:1140px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.eyebrow{font-family:var(--f-mono);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ochre)}
+html[lang="ar"] .eyebrow{font-family:var(--f-body);letter-spacing:0;font-size:.85rem;font-weight:600}
+.lead{color:var(--muted);max-width:68ch;font-size:1.05rem}
+.ltr{direction:ltr;unicode-bidi:isolate}
+
+/* header */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:12px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink)}
+.logo{width:42px;height:42px;border-radius:10px;background:var(--accent);display:grid;place-items:center;color:var(--surface);font-family:"Sora",sans-serif;font-weight:700;font-size:1.05rem}
+.brand b{font-family:"Sora",sans-serif;font-size:1.15rem;display:block;line-height:1.1}
+.brand small{color:var(--muted);font-size:.74rem;display:block;max-width:250px;line-height:1.3}
+.wide{max-width:1360px}
+.credit{width:100%;border-top:1px solid var(--line);padding-top:16px;font-size:.84rem}
+.credit b{color:var(--ink);font-weight:600}
+.tools{display:flex;align-items:center;gap:8px}
+.lang{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.lang button{font:inherit;font-size:.82rem;font-weight:600;padding:6px 10px;border:0;background:transparent;color:var(--muted);cursor:pointer}
+.lang button[lang="ar"]{font-family:"IBM Plex Sans Arabic",sans-serif}
+.lang button[aria-pressed="true"]{background:var(--accent);color:var(--surface)}
+.theme button{display:grid;place-items:center;padding:6px 9px}
+nav{flex:1;display:flex;justify-content:center}
+nav ul{list-style:none;margin:0;padding:0;display:flex;gap:2px}
+nav a{display:block;padding:8px 12px;border-radius:8px;text-decoration:none;color:var(--ink);font-weight:500;font-size:.95rem;white-space:nowrap}
+nav a:hover{color:var(--ink);background:var(--accent-soft)}
+nav a[aria-current="page"]{color:var(--accent);background:var(--accent-soft)}
+.menu-btn{display:none;background:none;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:6px 12px;font:inherit;cursor:pointer}
+@media (max-width:1240px){
+  .menu-btn{display:block}
+  nav{display:none;width:100%;order:3;justify-content:flex-start}
+  nav.open{display:block}
+  nav ul{flex-direction:column;padding-bottom:12px}
+  .bar{flex-wrap:wrap}
+}
+
+/* sections */
+main section.view{padding-block:48px 72px}
+.head{display:grid;gap:12px;margin-bottom:32px}
+.sub{margin-block:48px 20px}
+.grid{display:grid;gap:20px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.g4{grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px;display:grid;gap:10px;align-content:start;min-width:0}
+.card p{color:var(--muted)}
+.tag{display:inline-block;font-family:var(--f-mono);font-size:.72rem;padding:3px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:10px;background:var(--accent);color:var(--surface);text-decoration:none;border:0;font:inherit;font-weight:600;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.more{text-decoration:none;font-weight:500}
+.label{display:inline-flex;align-items:center;gap:8px;font-family:var(--f-mono);font-size:.78rem;padding:5px 10px;border-radius:8px;background:var(--ochre-soft);color:var(--ochre);width:max-content;max-width:100%}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center;padding-block:48px 40px}
+.hero h1{font-size:clamp(1.9rem,4.2vw,3.1rem);letter-spacing:-.01em}
+html[lang="ar"] .hero h1{letter-spacing:0;line-height:1.35}
+.hero h1 span{color:var(--accent)}
+.hero-txt{display:grid;gap:20px;min-width:0}
+.actions{display:flex;flex-wrap:wrap;gap:12px}
+.fig{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;min-width:0;margin:0;display:grid;gap:10px}
+.fig canvas{width:100%;aspect-ratio:4/3;max-width:100%;display:block}
+.fig figcaption{font-size:.8rem;color:var(--muted)}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{font:inherit;font-size:.8rem;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+@media (max-width:860px){.hero{grid-template-columns:1fr}}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));border-block:1px solid var(--line);margin-block:8px 48px}
+.stat{padding:20px 16px;border-inline-end:1px solid var(--line)}
+.stat:last-child{border-inline-end:0}
+.stat b{font-family:"Sora",sans-serif;font-size:1.9rem;display:block;font-variant-numeric:tabular-nums}
+.stat span{color:var(--muted);font-size:.88rem}
+
+/* info table (lab) */
+.info{display:grid;grid-template-columns:minmax(140px,220px) 1fr;border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
+.info dt,.info dd{padding:16px 20px;border-bottom:1px solid var(--line);margin:0}
+.info dt{color:var(--muted);font-weight:600;font-size:.88rem}
+.info dd{font-weight:500}
+.info dt:last-of-type,.info dd:last-of-type{border-bottom:0}
+@media (max-width:600px){.info{grid-template-columns:1fr}.info dt{border-bottom:0;padding-bottom:0}}
+
+/* teams */
+.team{border-top:4px solid var(--ochre)}
+.team .acr{font-family:"Sora",sans-serif;font-size:1.5rem;font-weight:700;color:var(--accent);letter-spacing:.02em}
+
+/* axes */
+.axes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:0 32px}
+.axis{display:grid;grid-template-columns:auto 1fr;gap:14px;padding-block:18px;border-bottom:1px solid var(--line)}
+.axis i{font-style:normal;width:10px;height:10px;border-radius:2px;background:var(--ochre);margin-top:8px}
+.axis h3{font-family:var(--f-body);font-size:1rem;font-weight:600}
+.axis p{color:var(--muted);font-size:.92rem;margin-top:4px}
+
+/* members */
+.member{position:relative;overflow:hidden}
+.member::after{content:"";position:absolute;inset-block-start:0;inset-inline-end:0;width:46px;height:46px;background:linear-gradient(to bottom left,var(--ochre) 50%,transparent 50%)}
+html[dir="rtl"] .member::after{background:linear-gradient(to bottom right,var(--ochre) 50%,transparent 50%)}
+.member h3{font-size:1rem;padding-inline-end:40px}
+.member .mail{font-size:.88rem;color:var(--muted);word-break:break-all;direction:ltr;text-align:start;unicode-bidi:isolate}
+.member .mail a{color:inherit;text-decoration:none}
+.member .mail a:hover{color:var(--accent);text-decoration:underline}
+.member .desc{font-size:.88rem}
+.badge{font-size:.74rem;font-weight:600;padding:3px 9px;border-radius:6px;width:max-content;max-width:100%}
+.badge.dir{background:var(--accent);color:var(--surface)}
+.badge.lead{background:var(--accent-soft);color:var(--accent)}
+.badge.prof,.badge.other{background:var(--ochre-soft);color:var(--ochre)}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.filters button{font:inherit;font-size:.88rem;padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--accent);color:var(--surface);border-color:var(--accent)}
+.filters small{opacity:.75;margin-inline-start:4px;font-variant-numeric:tabular-nums}
+
+/* publications */
+.pubs{display:grid;border-top:1px solid var(--line)}
+.pub{display:grid;grid-template-columns:70px 1fr;gap:16px;padding-block:18px;border-bottom:1px solid var(--line)}
+.pub .yr{font-family:var(--f-mono);color:var(--ochre);font-variant-numeric:tabular-nums}
+.pub h3{font-family:var(--f-body);font-weight:600;font-size:1rem}
+.pub p{color:var(--muted);font-size:.92rem}
+.search{width:100%;max-width:420px;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit;margin-block:6px 16px}
+
+/* table */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:620px}
+th,td{text-align:start;padding:12px 16px;border-bottom:1px solid var(--line);font-size:.92rem}
+th{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+tr:last-child td{border-bottom:0}
+
+/* news */
+.news{display:grid;grid-template-columns:auto 1fr;gap:16px}
+.date{text-align:center;border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:72px;height:max-content}
+.date b{display:block;font-size:1.4rem;font-family:"Sora",sans-serif;color:var(--accent)}
+.date small{font-size:.72rem;color:var(--muted)}
+
+/* contact */
+form{display:grid;gap:14px}
+label{font-weight:500;font-size:.9rem;display:grid;gap:6px}
+input,textarea,select{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.note{font-size:.88rem;color:var(--accent)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;margin:0}
+.kv dt{font-size:.78rem;text-transform:uppercase;color:var(--muted);padding-top:3px;font-weight:600}
+.kv dd{margin:0}
+
+/* conferences */
+.conf{display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:start;padding-block:18px;border-bottom:1px solid var(--line)}
+.conf h3{font-family:var(--f-body);font-size:1rem;font-weight:600}
+.conf p{color:var(--muted);font-size:.9rem}
+@media (max-width:600px){.conf{grid-template-columns:auto 1fr}.conf .badge{grid-column:2}}
+/* gallery */
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:16px}
+.gal figure{margin:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.gal .ph-img{aspect-ratio:4/3;max-width:100%;display:grid;place-items:center;color:var(--accent);background:repeating-linear-gradient(135deg,var(--accent-soft) 0 14px,var(--surface) 14px 28px)}
+.gal img{aspect-ratio:4/3;width:100%;object-fit:cover;display:block}
+.gal figcaption{padding:10px 14px;font-size:.88rem;color:var(--muted)}
+.gal figcaption b{display:block;color:var(--ink);font-weight:600}
+.partner{display:grid;grid-template-columns:48px 1fr;gap:14px;align-items:start}
+.partner .ini{width:48px;height:48px;border-radius:10px;background:var(--ochre-soft);color:var(--ochre);display:grid;place-items:center;font-family:"Sora",sans-serif;font-weight:700;font-size:.8rem}
+footer{border-top:1px solid var(--line);background:var(--surface);padding-block:32px;color:var(--muted);font-size:.88rem}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px}
+.ph{background:var(--accent-soft);border-radius:4px;padding:0 4px}
+@media (prefers-reduced-motion:no-preference){.view{animation:fade .35s ease}}
+@keyframes fade{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}
+</style>
+
+</head>
+<body>
+<header>
+  <div class="wrap wide bar">
+    <a class="brand" href="#accueil">
+      <div class="logo" aria-hidden="true">L</div>
+      <div><b>LASMAR</b><small data-i="univ"></small></div>
+    </a>
+    <nav id="mainNav"><ul id="navList"></ul></nav>
+    <div class="tools">
+      <div class="lang" role="group" aria-label="Langue / Language / اللغة">
+        <button type="button" data-lang="fr" lang="fr">FR</button>
+        <button type="button" data-lang="en" lang="en">EN</button>
+        <button type="button" data-lang="ar" lang="ar">عربي</button>
+      </div>
+      <div class="lang theme" role="group" id="themeSeg">
+        <button type="button" data-theme-set="light"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+        <button type="button" data-theme-set="dark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+      </div>
+      <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mainNav" data-i="menu"></button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- ACCUEIL -->
+  <section class="view" data-view="accueil">
+    <div class="wrap">
+      <div class="hero">
+        <div class="hero-txt">
+          <span class="label">URL-CNRST N°7</span>
+          <h1 data-i="heroTitle"></h1>
+          <p class="lead" data-i="heroLead"></p>
+          <div class="actions">
+            <a class="btn" href="#recherche" data-i="ctaResearch"></a>
+            <a class="btn ghost" href="#equipe" data-i="ctaTeam"></a>
+          </div>
+        </div>
+        <figure class="fig">
+          <div class="seg" role="group" id="figSeg">
+            <button type="button" data-fig="xrf" data-i="figXrfBtn"></button>
+            <button type="button" data-fig="eem" data-i="figEemBtn"></button>
+          </div>
+          <canvas id="spec" width="640" height="480"></canvas>
+          <figcaption id="figCap"></figcaption>
+        </figure>
+      </div>
+      <div class="stats" id="stats"></div>
+
+      <div class="head" style="margin-bottom:20px"><span class="eyebrow" data-i="labEyebrow"></span><h2 data-i="labTitle"></h2></div>
+      <dl class="info" id="info"></dl>
+      <div class="grid g2" id="labCards" style="margin-block:20px 48px"></div>
+
+      <div class="head" style="margin-bottom:20px"><span class="eyebrow" data-i="teamsEyebrow"></span></div>
+      <div class="grid g3" id="homeTeams" style="margin-bottom:48px"></div>
+
+      <div class="grid g2">
+        <div class="card">
+          <span class="eyebrow" data-i="recentNews"></span>
+          <div id="homeNews" class="grid" style="gap:16px"></div>
+          <a class="more" href="#conferences" data-i="allNews"></a>
+        </div>
+        <div class="card">
+          <span class="eyebrow" data-i="recentPubs"></span>
+          <div id="homePubs" class="grid" style="gap:14px"></div>
+          <a class="more" href="#publications" data-i="allPubs"></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- RECHERCHE -->
+  <section class="view" data-view="recherche" hidden>
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow" data-i="resEyebrow"></span>
+        <h2 data-i="teamsTitle"></h2>
+        <p class="lead" data-i="resLead"></p>
+      </div>
+      <div class="grid g3" id="teams"></div>
+      <div class="head sub"><h2 data-i="axesTitle"></h2></div>
+      <div class="axes" id="axes"></div>
+      <div class="head sub"><h2 data-i="projTitle"></h2></div>
+      <div class="grid g3" id="projects"></div>
+      <div class="head sub"><h2 data-i="eqTitle"></h2><p class="lead" data-i="eqLead"></p></div>
+      <div class="grid g3" id="equip"></div>
+    </div>
+  </section>
+
+  <!-- EQUIPE -->
+  <section class="view" data-view="equipe" hidden>
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow" data-i="teamEyebrow"></span>
+        <h2 data-i="teamTitle"></h2>
+      </div>
+      <div class="filters" id="memberFilters"></div>
+      <div class="grid g4" id="members"></div>
+    </div>
+  </section>
+
+  <!-- PUBLICATIONS -->
+  <section class="view" data-view="publications" hidden>
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow" data-i="pubEyebrow"></span>
+        <h2 data-i="pubTitle"></h2>
+      </div>
+      <label for="pubSearch"><span data-i="search"></span>
+        <input id="pubSearch" class="search" type="search">
+      </label>
+      <div class="pubs" id="pubs"></div>
+    </div>
+  </section>
+
+
+
+  <!-- CONFERENCES -->
+  <section class="view" data-view="conferences" hidden>
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow" data-i="confEyebrow"></span>
+        <h2 data-i="confTitle"></h2>
+      </div>
+      <div class="filters" id="confFilters"></div>
+      <div id="confs" style="border-top:1px solid var(--line)"></div>
+      <div class="head sub"><h2 data-i="newsTitle"></h2></div>
+      <div class="grid" id="news" style="gap:22px;max-width:820px"></div>
+    </div>
+  </section>
+
+  <!-- COLLABORATEURS -->
+  <section class="view" data-view="collaborateurs" hidden>
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow" data-i="collabEyebrow"></span>
+        <h2 data-i="partnersTitle"></h2>
+        <p class="lead" data-i="collabLead"></p>
+      </div>
+      <div class="grid g3" id="partners"></div>
+      <div class="head sub"><h2 data-i="collabTitle"></h2></div>
+      <div class="grid g4" id="collabs"></div>
+    </div>
+  </section>
+
+  <!-- GALERIE -->
+  <section class="view" data-view="galerie" hidden>
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow" data-i="galEyebrow"></span>
+        <h2 data-i="galTitle"></h2>
+        <p class="lead" data-i="galLead"></p>
+      </div>
+      <div class="gal" id="gallery"></div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="view" data-view="contact" hidden>
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow" data-i="contactEyebrow"></span>
+        <h2 data-i="contactTitle"></h2>
+      </div>
+      <div class="grid g2">
+        <div class="card">
+          <dl class="kv">
+            <dt data-i="lAddress"></dt><dd data-i="address"></dd>
+            <dt data-i="lDirector"></dt><dd>Pr. Mustapha HADDAD · <span class="ltr">m.haddad@umi.ac.ma</span></dd>
+            <dt data-i="lPhone"></dt><dd><span class="ph ltr">+212 5 xx xx xx xx</span></dd>
+            <dt data-i="lWeb"></dt><dd class="ltr">lasmar-umi.org</dd>
+          </dl>
+        </div>
+        <form class="card" id="contactForm">
+          <label for="cName"><span data-i="fName"></span><input id="cName" required></label>
+          <label for="cMail"><span data-i="fMail"></span><input id="cMail" type="email" required></label>
+          <label for="cType"><span data-i="fSubject"></span><select id="cType"></select></label>
+          <label for="cMsg"><span data-i="fMsg"></span><textarea id="cMsg" rows="5" required></textarea></label>
+          <button class="btn" type="submit" data-i="fSend"></button>
+          <p class="note" id="formNote" hidden></p>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© <span id="yr"></span> LASMAR · URL-CNRST N°7 · <span data-i="univShort"></span></span>
+    <span data-i="footTag"></span>
+    <span class="credit" data-i="credit"></span>
+  </div>
+</footer>
+
+<script>
+/* =====================================================================
+   CONTENU DU SITE — chaque texte existe en 3 langues : {fr:"…", en:"…", ar:"…"}
+   Pour modifier le site, changez uniquement les textes ci-dessous.
+   ===================================================================== */
+
+/* --- Textes fixes de l'interface --- */
+const UI={
+ univ:{fr:"Spectrométrie des Matériaux et Archéomatériaux",en:"Spectrometry of Materials and Archaeomaterials",ar:"مطيافية المواد والمواد الأثرية"},
+ univShort:{fr:"Faculté des Sciences, Université Moulay Ismaïl, Meknès",en:"Faculty of Sciences, Moulay Ismail University, Meknes",ar:"كلية العلوم، جامعة مولاي إسماعيل، مكناس"},
+ menu:{fr:"Menu",en:"Menu",ar:"القائمة"},
+ nav:{
+  accueil:{fr:"Accueil",en:"Home",ar:"الرئيسية"},
+  equipe:{fr:"Membres",en:"Members",ar:"الأعضاء"},
+  recherche:{fr:"Recherche",en:"Research",ar:"البحث"},
+  publications:{fr:"Publications",en:"Publications",ar:"المنشورات"},
+  conferences:{fr:"Conférences",en:"Conferences",ar:"المؤتمرات"},
+  collaborateurs:{fr:"Collaborateurs",en:"Collaborators",ar:"المتعاونون"},
+  galerie:{fr:"Galerie",en:"Gallery",ar:"المعرض"},
+  contact:{fr:"Contact",en:"Contact",ar:"اتصل بنا"}
+ },
+ heroTitle:{fr:"Laboratoire de <span>Spectrométrie des Matériaux</span> et Archéomatériaux",
+  en:"Laboratory of <span>Spectrometry of Materials</span> and Archaeomaterials",
+  ar:"مختبر <span>مطيافية المواد</span> والمواد الأثرية"},
+ heroLead:{fr:"Unité de Recherche Labellisée par le CNRST, rattachée au Département de Physique de la Faculté des Sciences de Meknès. LASMAR travaille sur les matériaux du patrimoine, les analyses environnementales, la physico-chimie des matériaux, les dispositifs électromagnétiques, les systèmes intelligents et les énergies renouvelables.",
+  en:"A research unit accredited by CNRST, part of the Department of Physics at the Faculty of Sciences of Meknes. LASMAR works on heritage materials, environmental analysis, materials physical chemistry, electromagnetic devices, intelligent systems and renewable energy.",
+  ar:"وحدة بحث معتمدة من طرف المركز الوطني للبحث العلمي والتقني (CNRST)، تابعة لشعبة الفيزياء بكلية العلوم بمكناس. يشتغل المختبر على مواد التراث، والتحاليل البيئية، والكيمياء الفيزيائية للمواد، والأجهزة الكهرومغناطيسية، والأنظمة الذكية، والطاقات المتجددة."},
+ ctaResearch:{fr:"Équipes et axes de recherche",en:"Teams and research themes",ar:"الفرق ومحاور البحث"},
+ ctaTeam:{fr:"Membres",en:"Members",ar:"الأعضاء"},
+ figXrfBtn:{fr:"Archéomatériaux · XRF",en:"Archaeomaterials · XRF",ar:"المواد الأثرية · XRF"},
+ figEemBtn:{fr:"Environnement · EEM",en:"Environment · EEM",ar:"البيئة · EEM"},
+ figXrf:{fr:"Spectre de fluorescence X illustratif d'un objet en bronze au plomb : raies Kα/Kβ du cuivre et du fer, raies L du plomb.",
+  en:"Illustrative X-ray fluorescence spectrum of a leaded bronze object: Cu and Fe Kα/Kβ lines, Pb L lines.",
+  ar:"طيف توضيحي للفلورة بالأشعة السينية لقطعة من البرونز المحتوي على الرصاص: خطوط Kα/Kβ للنحاس والحديد وخطوط L للرصاص."},
+ figEem:{fr:"Matrice d'excitation-émission (EEM) type d'un effluent de STEP · pics B, T (protéiques), A, C, M (humiques).",
+  en:"Typical excitation–emission matrix (EEM) of a WWTP effluent · peaks B, T (protein-like), A, C, M (humic-like).",
+  ar:"مصفوفة الإثارة والانبعاث (EEM) النموذجية لمياه خارجة من محطة معالجة · القمم B وT (بروتينية) وA وC وM (دبالية)."},
+ xrfX:{fr:"Énergie (keV)",en:"Energy (keV)",ar:"الطاقة (keV)"},
+ xrfY:{fr:"Intensité (coups)",en:"Intensity (counts)",ar:"الشدة (عدّات)"},
+ eemEm:{fr:"Émission (nm)",en:"Emission (nm)",ar:"الانبعاث (nm)"},
+ eemEx:{fr:"Excitation (nm)",en:"Excitation (nm)",ar:"الإثارة (nm)"},
+ teamsEyebrow:{fr:"Équipes de recherche",en:"Research teams",ar:"فرق البحث"},
+ recentNews:{fr:"Actualités récentes",en:"Latest news",ar:"آخر المستجدات"},
+ recentPubs:{fr:"Dernières publications",en:"Latest publications",ar:"أحدث المنشورات"},
+ allPubs:{fr:"Toutes les publications →",en:"All publications →",ar:"كل المنشورات ←"},
+ labEyebrow:{fr:"Le laboratoire",en:"The laboratory",ar:"المختبر"},
+ labTitle:{fr:"Informations générales",en:"General information",ar:"معلومات عامة"},
+ resEyebrow:{fr:"Recherche",en:"Research",ar:"البحث"},
+ teamsTitle:{fr:"Équipes du laboratoire",en:"Laboratory teams",ar:"فرق المختبر"},
+ resLead:{fr:"Le laboratoire est structuré en trois équipes, qui couvrent la spectrométrie et l'archéométrie, les systèmes électriques intelligents et la spectroscopie optique appliquée.",
+  en:"The laboratory is organised into three teams covering spectrometry and archaeometry, intelligent electrical systems, and applied optical spectroscopy.",
+  ar:"يتكوّن المختبر من ثلاث فرق تغطي المطيافية والأركيومترية، والأنظمة الكهربائية الذكية، والمطيافية البصرية التطبيقية."},
+ axesTitle:{fr:"Axes de recherche",en:"Research themes",ar:"محاور البحث"},
+ teamEyebrow:{fr:"Équipe",en:"People",ar:"الفريق"},
+ teamTitle:{fr:"Membres du laboratoire",en:"Laboratory members",ar:"أعضاء المختبر"},
+ all:{fr:"Tous",en:"All",ar:"الكل"},
+ pubEyebrow:{fr:"Production scientifique",en:"Scientific output",ar:"الإنتاج العلمي"},
+ pubTitle:{fr:"Publications",en:"Publications",ar:"المنشورات"},
+ search:{fr:"Rechercher",en:"Search",ar:"بحث"},
+ searchPh:{fr:"Titre, auteur, revue, mot-clé…",en:"Title, author, journal, keyword…",ar:"العنوان، المؤلف، المجلة، كلمة مفتاحية…"},
+ noPub:{fr:"Aucune publication ne correspond à cette recherche.",en:"No publication matches this search.",ar:"لا توجد منشورات مطابقة لهذا البحث."},
+ projEyebrow:{fr:"Projets",en:"Projects",ar:"المشاريع"},
+ projTitle:{fr:"Projets de recherche",en:"Research projects",ar:"مشاريع البحث"},
+ eqEyebrow:{fr:"Moyens",en:"Resources",ar:"الوسائل"},
+ eqTitle:{fr:"Plateformes et équipements",en:"Platforms and facilities",ar:"المنصات والتجهيزات"},
+ eqLead:{fr:"Équipements regroupés par équipe. Les éléments entre crochets sont à compléter par chaque responsable d'équipe (modèle, localisation, contact).",
+  en:"Instruments grouped by team. Items in brackets are to be completed by each team leader (model, location, contact).",
+  ar:"التجهيزات مصنّفة حسب الفرق. العناصر بين معقوفتين يستكملها مسؤول كل فريق (الطراز، المكان، جهة الاتصال)."},
+ newsEyebrow:{fr:"Vie du laboratoire",en:"Lab life",ar:"حياة المختبر"},
+ newsTitle:{fr:"Actualités et événements",en:"News and events",ar:"المستجدات والأنشطة"},
+ contactEyebrow:{fr:"Contact",en:"Contact",ar:"اتصل بنا"},
+ contactTitle:{fr:"Nous contacter",en:"Get in touch",ar:"تواصلوا معنا"},
+ lAddress:{fr:"Adresse",en:"Address",ar:"العنوان"},
+ lDirector:{fr:"Directeur",en:"Director",ar:"المدير"},
+ lPhone:{fr:"Tél.",en:"Phone",ar:"الهاتف"},
+ lWeb:{fr:"Web",en:"Web",ar:"الموقع"},
+ address:{fr:"LASMAR, Département de Physique, Faculté des Sciences, Université Moulay Ismaïl, B.P. <span class='ph'>[…]</span>, Meknès, Maroc",
+  en:"LASMAR, Department of Physics, Faculty of Sciences, Moulay Ismail University, P.O. Box <span class='ph'>[…]</span>, Meknes, Morocco",
+  ar:"مختبر LASMAR، شعبة الفيزياء، كلية العلوم، جامعة مولاي إسماعيل، ص.ب <span class='ph'>[…]</span>، مكناس، المغرب"},
+ fName:{fr:"Nom",en:"Name",ar:"الاسم"},
+ fMail:{fr:"E-mail",en:"Email",ar:"البريد الإلكتروني"},
+ fSubject:{fr:"Objet",en:"Subject",ar:"الموضوع"},
+ fMsg:{fr:"Message",en:"Message",ar:"الرسالة"},
+ fSend:{fr:"Envoyer",en:"Send",ar:"إرسال"},
+ subjects:[
+  {fr:"Collaboration",en:"Collaboration",ar:"تعاون"},
+  {fr:"Candidature (stage, thèse, post-doc)",en:"Application (internship, PhD, postdoc)",ar:"ترشّح (تدريب، دكتوراه، ما بعد الدكتوراه)"},
+  {fr:"Analyses / prestations",en:"Analyses / services",ar:"تحاليل / خدمات"},
+  {fr:"Autre",en:"Other",ar:"أخرى"}],
+ formNote:{fr:"Formulaire de démonstration : il faudra le relier à un service d'envoi (ex. Formspree) lors de la mise en ligne.",
+  en:"Demo form: it must be connected to a sending service (e.g. Formspree) when the site goes live.",
+  ar:"استمارة تجريبية: يجب ربطها بخدمة إرسال (مثل Formspree) عند نشر الموقع."},
+ themeLight:{fr:"Mode clair",en:"Light mode",ar:"الوضع الفاتح"},
+ themeDark:{fr:"Mode sombre",en:"Dark mode",ar:"الوضع الداكن"},
+ themeGroup:{fr:"Affichage",en:"Display",ar:"العرض"},
+ allNews:{fr:"Conférences et actualités →",en:"Conferences and news →",ar:"المؤتمرات والمستجدات ←"},
+ confEyebrow:{fr:"Événements scientifiques",en:"Scientific events",ar:"التظاهرات العلمية"},
+ confTitle:{fr:"Conférences",en:"Conferences",ar:"المؤتمرات"},
+ confAll:{fr:"Toutes",en:"All",ar:"الكل"},
+ confOrg:{fr:"Organisée par LASMAR",en:"Organised by LASMAR",ar:"من تنظيم المختبر"},
+ confPart:{fr:"Participation",en:"Participation",ar:"مشاركة"},
+ confInv:{fr:"Conférence invitée",en:"Invited talk",ar:"محاضرة بدعوة"},
+ collabEyebrow:{fr:"Réseau",en:"Network",ar:"الشبكة"},
+ partnersTitle:{fr:"Institutions partenaires",en:"Partner institutions",ar:"المؤسسات الشريكة"},
+ collabLead:{fr:"Universités, centres de recherche et organismes avec lesquels LASMAR mène des projets, des cotutelles de thèse et des publications communes.",en:"Universities, research centres and organisations with which LASMAR runs projects, joint PhDs and co-authored publications.",ar:"الجامعات ومراكز البحث والهيئات التي يشتغل معها المختبر في مشاريع وأطروحات بإشراف مشترك ومنشورات مشتركة."},
+ collabTitle:{fr:"Collaborateurs",en:"Collaborators",ar:"المتعاونون"},
+ galEyebrow:{fr:"Galerie",en:"Gallery",ar:"المعرض"},
+ galTitle:{fr:"La vie du laboratoire en images",en:"Lab life in pictures",ar:"حياة المختبر بالصور"},
+ galLead:{fr:"Emplacements prêts à recevoir vos photos : laboratoire, missions de terrain, soutenances, conférences.",en:"Slots ready for your photos: laboratory, fieldwork, defences, conferences.",ar:"أماكن جاهزة لصوركم: المختبر، العمل الميداني، المناقشات، المؤتمرات."},
+ credit:{fr:"Site conçu et réalisé par <b>Omar Taoussi</b>",en:"Website designed and built by <b>Omar Taoussi</b>",ar:"تصميم وإنجاز الموقع: <b>عمر الطاوسي</b>"},
+ footTag:{fr:"Matériaux · Patrimoine · Environnement · Énergie",en:"Materials · Heritage · Environment · Energy",ar:"المواد · التراث · البيئة · الطاقة"}
+};
+
+/* --- Informations générales --- */
+const INFO=[
+ [{fr:"Intitulé",en:"Full name",ar:"التسمية"},{fr:"Laboratoire de Spectrométrie des Matériaux et Archéomatériaux (LASMAR), Unité de Recherche Labellisée par le CNRST (URL-CNRST N°7)",en:"Laboratory of Spectrometry of Materials and Archaeomaterials (LASMAR), CNRST-accredited Research Unit (URL-CNRST No. 7)",ar:"مختبر مطيافية المواد والمواد الأثرية (LASMAR)، وحدة بحث معتمدة من طرف المركز الوطني للبحث العلمي والتقني (URL-CNRST رقم 7)"}],
+ [{fr:"Domaine de recherche",en:"Research fields",ar:"مجال البحث"},{fr:"Physique / Matériaux ; Matériaux du patrimoine et objets d'art ; Analyses environnementales ; Dispositifs électromagnétiques ; Systèmes intelligents et énergies renouvelables",en:"Physics / Materials; Heritage materials and art objects; Environmental analysis; Electromagnetic devices; Intelligent systems and renewable energy",ar:"الفيزياء / المواد؛ مواد التراث والتحف الفنية؛ التحاليل البيئية؛ الأجهزة الكهرومغناطيسية؛ الأنظمة الذكية والطاقات المتجددة"}],
+ [{fr:"Abréviation",en:"Acronym",ar:"الاختصار"},"LASMAR"],
+ [{fr:"Établissement",en:"Institution",ar:"المؤسسة"},{fr:"Faculté des Sciences, Université Moulay Ismaïl, Meknès",en:"Faculty of Sciences, Moulay Ismail University, Meknes",ar:"كلية العلوم، جامعة مولاي إسماعيل، مكناس"}],
+ [{fr:"Département",en:"Department",ar:"الشعبة"},{fr:"Département de Physique",en:"Department of Physics",ar:"شعبة الفيزياء"}],
+ [{fr:"Directeur",en:"Director",ar:"المدير"},"Pr. Mustapha HADDAD"]
+];
+
+/* --- Cartes sous les informations générales --- */
+const LAB=[
+ {t:{fr:"Mot du directeur",en:"Director's message",ar:"كلمة المدير"},
+  d:{fr:"[Texte du directeur : vision, priorités, ouverture aux collaborations nationales et internationales.] — Pr. Mustapha HADDAD",
+     en:"[Director's message: vision, priorities, openness to national and international collaboration.] — Prof. Mustapha HADDAD",
+     ar:"[كلمة مدير المختبر: الرؤية، الأولويات، الانفتاح على التعاون الوطني والدولي.] — ذ. مصطفى حداد"},k:[]},
+ {t:{fr:"Partenaires",en:"Partners",ar:"الشركاء"},
+  d:{fr:"CNRST (labellisation URL N°7) ; Université de Sherbrooke (Canada) dans le cadre de cotutelles de thèse ; autres partenaires [à compléter].",
+     en:"CNRST (URL No. 7 accreditation); Université de Sherbrooke (Canada) through joint PhD supervision; other partners [to be completed].",
+     ar:"المركز الوطني للبحث العلمي والتقني (اعتماد URL رقم 7)؛ جامعة شيربروك (كندا) في إطار الإشراف المشترك على أطروحات الدكتوراه؛ شركاء آخرون [يُستكمل]."},k:[]}
+];
+
+/* --- Équipes --- */
+const TEAMS=[
+ {a:"SAPCM",t:{fr:"Spectrométrie, Archéométrie et Physico-chimie des Matériaux",en:"Spectrometry, Archaeometry and Physical Chemistry of Materials",ar:"المطيافية والأركيومترية والكيمياء الفيزيائية للمواد"}},
+ {a:"SEIMC",t:{fr:"Systèmes Électriques Intelligents, Matériaux et Composants",en:"Intelligent Electrical Systems, Materials and Components",ar:"الأنظمة الكهربائية الذكية والمواد والمكونات"}},
+ {a:"SOAPEPM",t:{fr:"Spectroscopie Optique Appliquée au Patrimoine, à l'Environnement et à la Physico-chimie Moléculaire",en:"Optical Spectroscopy Applied to Heritage, Environment and Molecular Physical Chemistry",ar:"المطيافية البصرية المطبَّقة على التراث والبيئة والكيمياء الفيزيائية الجزيئية"}}
+];
+const TEAM_LEAD={fr:"Responsable : [à compléter]",en:"Team leader: [to be completed]",ar:"المسؤول(ة): [يُستكمل]"};
+
+/* --- Axes de recherche --- */
+const AXES=[
+ {t:{fr:"Investigations scientifiques des matériaux du patrimoine et objets d'art",en:"Scientific investigation of heritage materials and art objects",ar:"البحث العلمي في مواد التراث والتحف الفنية"}},
+ {t:{fr:"Analyses environnementales",en:"Environmental analysis",ar:"التحاليل البيئية"},
+  d:{fr:"Dont : matière organique dissoute des eaux usées traitées et devenir des micropolluants dans les sols irrigués.",en:"Including: dissolved organic matter in treated wastewater and the fate of micropollutants in irrigated soils.",ar:"منها: المادة العضوية الذائبة في المياه العادمة المعالَجة ومصير الملوثات الدقيقة في التربة المسقية."}},
+ {t:{fr:"Physicochimie des matériaux à propriétés améliorées",en:"Physical chemistry of materials with enhanced properties",ar:"الكيمياء الفيزيائية للمواد ذات الخصائص المحسَّنة"}},
+ {t:{fr:"Matériaux, composants et télécommunication",en:"Materials, components and telecommunications",ar:"المواد والمكونات والاتصالات"}},
+ {t:{fr:"Systèmes électriques intelligents à sources d'énergies renouvelables et intégration au réseau électrique",en:"Intelligent electrical systems with renewable energy sources and grid integration",ar:"الأنظمة الكهربائية الذكية ذات مصادر الطاقات المتجددة وإدماجها في الشبكة الكهربائية"},
+  d:{fr:"Photovoltaïque, éolien, thermoélectrique et systèmes hybrides.",en:"Photovoltaic, wind, thermoelectric and hybrid systems.",ar:"الطاقة الشمسية الكهروضوئية، والريحية، والكهروحرارية، والأنظمة الهجينة."}},
+ {t:{fr:"Smart grids, intelligence artificielle et Internet des objets (IoT)",en:"Smart grids, artificial intelligence and the Internet of Things (IoT)",ar:"الشبكات الذكية والذكاء الاصطناعي وإنترنت الأشياء"}},
+ {t:{fr:"Énergie et intelligence artificielle",en:"Energy and artificial intelligence",ar:"الطاقة والذكاء الاصطناعي"}}
+];
+
+/* --- Membres ---
+   c = prof | phd | alumni      role = dir | lead | prof | other */
+const CATS={
+ prof:{fr:"Professeurs",en:"Professors",ar:"الأساتذة"},
+ phd:{fr:"Doctorants",en:"PhD students",ar:"طلبة الدكتوراه"},
+ alumni:{fr:"Alumni",en:"Alumni",ar:"الخريجون"}
+};
+const ROLES={
+ dir:{fr:"Directeur du laboratoire",en:"Laboratory director",ar:"مدير المختبر"},
+ lead:{fr:"Responsable d'équipe",en:"Team leader",ar:"مسؤول(ة) فريق"},
+ prof:{fr:"Professeur·e",en:"Professor",ar:"أستاذ(ة)"}
+};
+const P=(n,e,role="prof")=>({n,e,c:"prof",role});
+const MEMBERS=[
+ P("HADDAD Mustapha","m.haddad@umi.ac.ma","dir"),
+ P("EL AMRAOUI Mohamed","m.elamraoui@umi.ac.ma","lead"),
+ P("EL AMRANI Aumeur","a.elamrani@umi.ac.ma","lead"),
+ P("AIT LYAZIDI Saadia","s.aitlyazidi@umi.ac.ma","lead"),
+ P("NAKHELI Abdelrhani","a.nakheli@umi.ac.ma"),
+ P("BEJJIT Lahcen","l.bejjit@umi.ac.ma"),
+ P("BRI Seddik","s.bri@umi.ac.ma"),
+ P("KAMMOUNI Abdelkhalek","a.kammouni@umi.ac.ma"),
+ P("OUNEJJAR Youssef","y.ounejjar@umi.ac.ma"),
+ P("MGHARI Ahmed","ah.mghari@umi.ac.ma"),
+ P("EL BOUBAKRAOUI Moulay Chrif","m.elboubakraoui@umi.ac.ma"),
+ P("YAHIAOUI Elmostapha","e.yahiaoui@umi.ac.ma"),
+ P("AZEROUAL Mohamed","m.azeroual@umi.ac.ma"),
+ P("EL FADL Adiba","a.elfadl@umi.ac.ma"),
+ P("BENYAICH Fouad","f.benyaich@umi.ac.ma"),
+ P("AMALOUD Addi","a.amaloud@umi.ac.ma"),
+ P("EL BAKKALI Abdelmajid","a.elbakkali@umi.ac.ma"),
+ P("NOUAITI Ayoub","a.nouaiti@umi.ac.ma"),
+ P("EL OUANJLI Najib","n.elouanjli@umi.ac.ma"),
+ P("AYAT Yassine","y.ayat@umi.ac.ma"),
+ P("TAOUSSI Mohammed","m.taoussi@umi.ac.ma"),
+ {n:"TAOUSSI Omar",c:"phd",role:"other",r:{fr:"Doctorant (cotutelle UMI – U. Sherbrooke)",en:"PhD student (joint UMI – U. Sherbrooke)",ar:"طالب دكتوراه (إشراف مشترك: جامعة مولاي إسماعيل – جامعة شيربروك)"},
+  d:{fr:"MOD des STEP et devenir des micropolluants organiques dans les sols irrigués",en:"WWTP-derived DOM and the fate of organic micropollutants in irrigated soils",ar:"المادة العضوية الذائبة لمحطات المعالجة ومصير الملوثات العضوية الدقيقة في التربة المسقية"}},
+ {n:"[NOM Prénom]",c:"phd",role:"other",r:{fr:"Doctorant·e",en:"PhD student",ar:"طالب(ة) دكتوراه"},d:{fr:"[Sujet de thèse]",en:"[Thesis topic]",ar:"[موضوع الأطروحة]"}},
+ {n:"[NOM Prénom]",c:"alumni",role:"other",r:{fr:"Docteur·e – soutenance [année]",en:"PhD – defended [year]",ar:"دكتور(ة) – مناقشة [السنة]"},d:{fr:"Thèse : [titre] · Aujourd'hui : [poste, institution]",en:"Thesis: [title] · Now: [position, institution]",ar:"الأطروحة: [العنوان] · حالياً: [المنصب، المؤسسة]"}},
+ {n:"[NOM Prénom]",c:"alumni",role:"other",r:{fr:"Master / stage – [année]",en:"Master's / internship – [year]",ar:"ماستر / تدريب – [السنة]"},d:{fr:"Aujourd'hui : [poste, institution]",en:"Now: [position, institution]",ar:"حالياً: [المنصب، المؤسسة]"}}
+];
+
+/* --- Collaborateurs : institutions et personnes --- */
+const PARTNERS=[
+ {a:"CNRST",t:{fr:"Centre National pour la Recherche Scientifique et Technique",en:"National Centre for Scientific and Technical Research",ar:"المركز الوطني للبحث العلمي والتقني"},d:{fr:"Labellisation URL-CNRST N°7 · Rabat, Maroc",en:"URL-CNRST No. 7 accreditation · Rabat, Morocco",ar:"اعتماد URL-CNRST رقم 7 · الرباط، المغرب"}},
+ {a:"UdeS",t:{fr:"Université de Sherbrooke",en:"Université de Sherbrooke",ar:"جامعة شيربروك"},d:{fr:"Cotutelle de thèse · Québec, Canada",en:"Joint PhD supervision · Quebec, Canada",ar:"إشراف مشترك على الدكتوراه · كيبيك، كندا"}},
+ {a:"[…]",t:{fr:"[Institution partenaire]",en:"[Partner institution]",ar:"[مؤسسة شريكة]"},d:{fr:"[Nature de la collaboration · ville, pays]",en:"[Type of collaboration · city, country]",ar:"[طبيعة التعاون · المدينة، البلد]"}}
+];
+const COLLABS=[
+ {n:"[NOM Prénom]",role:"other",r:{fr:"Collaborateur·rice international·e",en:"International collaborator",ar:"متعاون(ة) دولي(ة)"},d:{fr:"Université de Sherbrooke (Canada) · [domaine de collaboration]",en:"Université de Sherbrooke (Canada) · [field of collaboration]",ar:"جامعة شيربروك (كندا) · [مجال التعاون]"}},
+ {n:"[NOM Prénom]",role:"other",r:{fr:"Collaborateur·rice national·e",en:"National collaborator",ar:"متعاون(ة) وطني(ة)"},d:{fr:"[Université / institution, Maroc] · [domaine de collaboration]",en:"[University / institution, Morocco] · [field of collaboration]",ar:"[الجامعة / المؤسسة، المغرب] · [مجال التعاون]"}},
+ {n:"[NOM Prénom]",role:"other",r:{fr:"Partenaire socio-économique",en:"Industry / public partner",ar:"شريك اجتماعي-اقتصادي"},d:{fr:"[Organisme] · [domaine de collaboration]",en:"[Organisation] · [field of collaboration]",ar:"[الهيئة] · [مجال التعاون]"}},
+];
+
+/* --- Conférences : type = org | part | inv --- */
+const CONFS=[
+ {d:"2026-05-20",type:"org",t:{fr:"[Journée scientifique / colloque organisé par LASMAR]",en:"[Scientific day / symposium organised by LASMAR]",ar:"[يوم دراسي / ندوة من تنظيم المختبر]"},l:{fr:"Faculté des Sciences, Meknès",en:"Faculty of Sciences, Meknes",ar:"كلية العلوم، مكناس"}},
+ {d:"2026-06-10",type:"part",t:{fr:"[Congrès d'écotoxicologie – titre de la communication]",en:"[Ecotoxicology conference – talk title]",ar:"[مؤتمر علم السموم البيئية – عنوان المداخلة]"},l:{fr:"[Ville], Canada",en:"[City], Canada",ar:"[المدينة]، كندا"}},
+ {d:"2025-11-12",type:"part",t:{fr:"[Congrès d'écotoxicologie – titre de la communication]",en:"[Ecotoxicology conference – talk title]",ar:"[مؤتمر علم السموم البيئية – عنوان المداخلة]"},l:{fr:"[Ville], Maroc",en:"[City], Morocco",ar:"[المدينة]، المغرب"}},
+ {d:"2025-04-08",type:"inv",t:{fr:"[Conférence invitée – titre]",en:"[Invited talk – title]",ar:"[محاضرة بدعوة – العنوان]"},l:{fr:"[Lieu]",en:"[Venue]",ar:"[المكان]"}}
+];
+
+/* --- Galerie : mettez le nom du fichier image dans src (ex. "photos/labo1.jpg") --- */
+const GALLERY=[
+ {src:"",t:{fr:"Laboratoire",en:"Laboratory",ar:"المختبر"},d:{fr:"[Salle d'instrumentation]",en:"[Instrument room]",ar:"[قاعة الأجهزة]"}},
+ {src:"",t:{fr:"Patrimoine",en:"Heritage",ar:"التراث"},d:{fr:"[Analyse d'un objet archéologique]",en:"[Analysis of an archaeological object]",ar:"[تحليل قطعة أثرية]"}},
+ {src:"",t:{fr:"Terrain",en:"Fieldwork",ar:"العمل الميداني"},d:{fr:"[Campagne d'échantillonnage]",en:"[Sampling campaign]",ar:"[حملة أخذ العينات]"}},
+ {src:"",t:{fr:"Énergie",en:"Energy",ar:"الطاقة"},d:{fr:"[Banc photovoltaïque]",en:"[PV test bench]",ar:"[منصة الطاقة الكهروضوئية]"}},
+ {src:"",t:{fr:"Soutenance",en:"Defence",ar:"مناقشة"},d:{fr:"[Soutenance de thèse – année]",en:"[PhD defence – year]",ar:"[مناقشة أطروحة – السنة]"}},
+ {src:"",t:{fr:"Conférence",en:"Conference",ar:"مؤتمر"},d:{fr:"[Événement – lieu]",en:"[Event – venue]",ar:"[الحدث – المكان]"}}
+];
+
+/* --- Publications (titres dans leur langue d'origine) --- */
+const PUBS=[
+ {y:2026,t:"[Exact title] – DOM variability assessed by UV-Vis and fluorescence spectroscopy coupled with PCA",a:"Taoussi O., et al.",j:"Spectrochimica Acta Part A: Molecular and Biomolecular Spectroscopy",doi:""},
+ {y:2026,t:"[Title] – Review on DOM spectroscopy in wastewater",a:"[Authors]",j:"[Journal] (in preparation)",doi:""},
+ {y:2025,t:"[Title – heritage materials / archaeometry]",a:"[Authors]",j:"[Journal]",doi:""},
+ {y:2025,t:"[Title – intelligent electrical systems / renewable energy]",a:"[Authors]",j:"[Journal]",doi:""}
+];
+
+/* --- Projets --- */
+const PROJECTS=[
+ {t:{fr:"Thèse en cotutelle UMI – Sherbrooke",en:"Joint PhD UMI – Sherbrooke",ar:"أطروحة بإشراف مشترك: مولاي إسماعيل – شيربروك"},
+  d:{fr:"Influence de la MOD des effluents de STEP sur le devenir des micropolluants organiques (carbamazépine ¹⁴C) dans les sols agricoles.",en:"Influence of WWTP effluent DOM on the fate of organic micropollutants (¹⁴C-carbamazepine) in agricultural soils.",ar:"تأثير المادة العضوية الذائبة لمياه محطات المعالجة على مصير الملوثات العضوية الدقيقة (الكاربامازيبين الموسوم ¹⁴C) في التربة الفلاحية."},
+  k:["Analyses environnementales","EEM-PARAFAC","FT-ICR-MS"]},
+ {t:{fr:"[Projet – patrimoine / archéomatériaux]",en:"[Project – heritage / archaeomaterials]",ar:"[مشروع – التراث / المواد الأثرية]"},d:{fr:"[Bailleur, durée, partenaires, objectifs]",en:"[Funder, duration, partners, objectives]",ar:"[الجهة المموّلة، المدة، الشركاء، الأهداف]"},k:["SAPCM"]},
+ {t:{fr:"[Projet – énergies renouvelables / smart grids]",en:"[Project – renewable energy / smart grids]",ar:"[مشروع – الطاقات المتجددة / الشبكات الذكية]"},d:{fr:"[Bailleur, durée, partenaires, objectifs]",en:"[Funder, duration, partners, objectives]",ar:"[الجهة المموّلة، المدة، الشركاء، الأهداف]"},k:["SEIMC"]}
+];
+
+/* --- Équipements (par équipe) --- */
+const EQUIP=[
+ {t:{fr:"Spectrofluorimètre",en:"Spectrofluorometer",ar:"مقياس الفلورة الطيفي"},d:{fr:"Matrices EEM, correction des effets d'écran interne et des diffusions Rayleigh/Raman.",en:"EEM acquisition with inner-filter and Rayleigh/Raman scatter correction.",ar:"قياس مصفوفات EEM مع تصحيح تأثير المرشح الداخلي وتشتّت رايلي/رامان."},k:["SOAPEPM","[Modèle]"]},
+ {t:{fr:"Spectrophotomètre UV-Vis",en:"UV-Vis spectrophotometer",ar:"مطياف الأشعة فوق البنفسجية والمرئية"},d:{fr:"Spectres d'absorbance 200–800 nm, SUVA254 et pentes spectrales.",en:"Absorbance spectra 200–800 nm, SUVA254 and spectral slopes.",ar:"أطياف الامتصاص 200–800 نانومتر، وSUVA254 والميول الطيفية."},k:["SOAPEPM","[Modèle]"]},
+ {t:{fr:"[Équipement de spectrométrie des matériaux]",en:"[Materials spectrometry instrument]",ar:"[جهاز مطيافية المواد]"},d:{fr:"[Ex. : XRF, DRX, FTIR, Raman… à confirmer par l'équipe]",en:"[e.g. XRF, XRD, FTIR, Raman… to be confirmed by the team]",ar:"[مثال: XRF، DRX، FTIR، رامان… يؤكده الفريق]"},k:["SAPCM"]},
+ {t:{fr:"[Équipement d'archéométrie]",en:"[Archaeometry instrument]",ar:"[جهاز الأركيومترية]"},d:{fr:"[Description, localisation, responsable]",en:"[Description, location, person in charge]",ar:"[الوصف، المكان، المسؤول]"},k:["SAPCM"]},
+ {t:{fr:"[Banc d'essai énergies renouvelables]",en:"[Renewable energy test bench]",ar:"[منصة اختبار الطاقات المتجددة]"},d:{fr:"[Photovoltaïque, éolien, électronique de puissance… à confirmer]",en:"[PV, wind, power electronics… to be confirmed]",ar:"[كهروضوئية، ريحية، إلكترونيات القدرة… يُؤكَّد]"},k:["SEIMC"]},
+ {t:{fr:"[Équipement hyperfréquences / composants]",en:"[Microwave / components instrument]",ar:"[جهاز الموجات الدقيقة / المكونات]"},d:{fr:"[Description, localisation, responsable]",en:"[Description, location, person in charge]",ar:"[الوصف، المكان، المسؤول]"},k:["SEIMC"]}
+];
+
+/* --- Actualités --- */
+const NEWS=[
+ {d:"2026-11-03",t:{fr:"[Titre de l'actualité]",en:"[News title]",ar:"[عنوان الخبر]"},x:{fr:"[Soutenance, séminaire, nouvelle publication, congrès…]",en:"[Defence, seminar, new paper, conference…]",ar:"[مناقشة، ندوة، منشور جديد، مؤتمر…]"}},
+ {d:"2026-10-15",t:{fr:"Article accepté dans Spectrochimica Acta Part A",en:"Paper accepted in Spectrochimica Acta Part A",ar:"قبول مقال في مجلة Spectrochimica Acta Part A"},
+  x:{fr:"Travaux sur la variabilité de la MOD par spectroscopies UV-Vis et de fluorescence couplées à l'ACP.",en:"Work on DOM variability using UV-Vis and fluorescence spectroscopy coupled with PCA.",ar:"أعمال حول تغيّر المادة العضوية الذائبة باستعمال مطيافية UV-Vis والفلورة مع تحليل المكونات الرئيسية."}},
+ {d:"2026-06-10",t:{fr:"[Participation à un congrès]",en:"[Conference participation]",ar:"[المشاركة في مؤتمر]"},x:{fr:"[Lieu, titre de la communication]",en:"[Venue, talk title]",ar:"[المكان، عنوان المداخلة]"}}
+];
+/* ========================= FIN DU CONTENU ========================= */
+
+const $=s=>document.querySelector(s);
+let lang="fr",cat="all",fig="xrf",theme=null;
+try{const t=localStorage.getItem("lasmar-theme");if(t==="light"||t==="dark")theme=t}catch(e){}
+function curTheme(){return theme||document.documentElement.getAttribute("data-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}
+function applyTheme(){
+  if(theme)document.documentElement.setAttribute("data-theme",theme);
+  const c=curTheme();
+  document.querySelectorAll("[data-theme-set]").forEach(b=>{b.setAttribute("aria-pressed",b.dataset.themeSet===c);b.setAttribute("aria-label",T(b.dataset.themeSet==="dark"?UI.themeDark:UI.themeLight));b.title=b.getAttribute("aria-label")});
+  document.getElementById("themeSeg").setAttribute("aria-label",T(UI.themeGroup));
+}
+try{const s=localStorage.getItem("lasmar-lang");if(["fr","en","ar"].includes(s))lang=s}catch(e){}
+const T=o=>o==null?"":typeof o==="string"?o:(o[lang]??o.fr);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const tags=k=>k&&k.length?`<div class="tags">${k.map(x=>`<span class="tag">${esc(T(x))}</span>`).join("")}</div>`:"";
+const card=o=>`<div class="card"><h3>${esc(T(o.t))}</h3><p>${esc(T(o.d))}</p>${tags(o.k)}</div>`;
+const LOCALE={fr:"fr-FR",en:"en-GB",ar:"ar-MA-u-nu-latn"};
+const NAVIDS=Object.keys(UI.nav);
+const teamCard=t=>`<div class="card team"><span class="acr">${t.a}</span><h3 style="font-size:1rem">${esc(T(t.t))}</h3><p style="font-size:.88rem">${esc(T(TEAM_LEAD))}</p></div>`;
+
+function newsItem(n){const d=new Date(n.d+"T12:00:00");const m=new Intl.DateTimeFormat(LOCALE[lang],{month:"short",year:"numeric"}).format(d);
+  return `<div class="news"><div class="date"><b>${d.getDate()}</b><small>${esc(m)}</small></div><div><h3>${esc(T(n.t))}</h3><p style="color:var(--muted)">${esc(T(n.x))}</p></div></div>`}
+const pubItem=p=>`<div class="pub"><span class="yr">${p.y}</span><div lang="en" dir="ltr" style="text-align:start"><h3>${esc(p.t)}</h3><p>${esc(p.a)} — <i>${esc(p.j)}</i>${p.doi?` · <a href="https://doi.org/${esc(p.doi)}" target="_blank" rel="noopener">DOI</a>`:""}</p></div></div>`;
+function renderPubs(){const q=$("#pubSearch").value.toLowerCase();
+  $("#pubs").innerHTML=PUBS.filter(p=>!q||[p.t,p.a,p.j,p.y].join(" ").toLowerCase().includes(q)).map(pubItem).join("")||`<p style="padding:18px 0;color:var(--muted)">${esc(T(UI.noPub))}</p>`}
+function memberCard(m){
+  const role=m.role==="other"?T(m.r):T(ROLES[m.role]);
+  const mail=m.e?`<div class="mail"><a href="mailto:${esc(m.e)}">✉ ${esc(m.e)}</a></div>`:"";
+  const desc=m.d?`<p class="desc">${esc(T(m.d))}</p>`:"";
+  return `<div class="card member"><h3 dir="ltr" style="text-align:start">${esc(m.n)}</h3>${mail}${desc}<span class="badge ${m.role}">${esc(role)}</span></div>`}
+let confType="all";
+function renderConfs(){
+  const L={all:UI.confAll,org:UI.confOrg,part:UI.confPart,inv:UI.confInv};
+  $("#confFilters").innerHTML=Object.keys(L).map(k=>`<button type="button" aria-pressed="${k===confType}" data-t="${k}">${esc(T(L[k]))}</button>`).join("");
+  const cls={org:"dir",part:"lead",inv:"prof"};
+  $("#confs").innerHTML=CONFS.filter(c=>confType==="all"||c.type===confType).sort((a,b)=>b.d.localeCompare(a.d)).map(c=>{const d=new Date(c.d+"T12:00:00");const m=new Intl.DateTimeFormat(LOCALE[lang],{month:"short",year:"numeric"}).format(d);
+    return `<div class="conf"><div class="date"><b>${d.getDate()}</b><small>${esc(m)}</small></div><div><h3>${esc(T(c.t))}</h3><p>${esc(T(c.l))}</p></div><span class="badge ${cls[c.type]}">${esc(T(L[c.type]))}</span></div>`}).join("");
+}
+function renderMembers(){
+  const keys=["all",...Object.keys(CATS)];
+  const count=k=>k==="all"?MEMBERS.length:MEMBERS.filter(m=>m.c===k).length;
+  $("#memberFilters").innerHTML=keys.map(k=>`<button type="button" aria-pressed="${k===cat}" data-c="${k}">${esc(T(k==="all"?UI.all:CATS[k]))}<small>${count(k)}</small></button>`).join("");
+  $("#members").innerHTML=MEMBERS.filter(m=>cat==="all"||m.c===cat).map(memberCard).join("");
+}
+
+function render(){
+  const root=document.documentElement;
+  root.lang=lang;root.dir=lang==="ar"?"rtl":"ltr";
+  document.querySelectorAll("[data-lang]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===lang));
+  document.querySelectorAll("[data-i]").forEach(el=>{el.innerHTML=T(UI[el.dataset.i])});
+  $("#mainNav").setAttribute("aria-label",{fr:"Navigation principale",en:"Main navigation",ar:"التنقل الرئيسي"}[lang]);
+  $("#navList").innerHTML=NAVIDS.map(id=>`<li><a href="#${id}" data-nav="${id}">${esc(T(UI.nav[id]))}</a></li>`).join("");
+  const nProf=MEMBERS.filter(m=>m.c==="prof").length;
+  const STATS=[["N°7",{fr:"Unité labellisée CNRST",en:"CNRST-accredited unit",ar:"وحدة معتمدة من CNRST"}],["3",{fr:"équipes de recherche",en:"research teams",ar:"فرق بحث"}],[String(AXES.length),{fr:"axes de recherche",en:"research themes",ar:"محاور بحث"}],[String(nProf),{fr:"professeur·e·s",en:"professors",ar:"أستاذاً وأستاذة"}]];
+  $("#stats").innerHTML=STATS.map(([v,l])=>`<div class="stat"><b>${esc(v)}</b><span>${esc(T(l))}</span></div>`).join("");
+  $("#info").innerHTML=INFO.map(([k,v])=>`<dt>${esc(T(k))}</dt><dd>${esc(T(v))}</dd>`).join("");
+  $("#labCards").innerHTML=LAB.map(card).join("");
+  $("#teams").innerHTML=TEAMS.map(teamCard).join("");
+  $("#homeTeams").innerHTML=TEAMS.map(teamCard).join("");
+  $("#axes").innerHTML=AXES.map(a=>`<div class="axis"><i></i><div><h3>${esc(T(a.t))}</h3>${a.d?`<p>${esc(T(a.d))}</p>`:""}</div></div>`).join("");
+  $("#projects").innerHTML=PROJECTS.map(card).join("");
+  $("#equip").innerHTML=EQUIP.map(card).join("");
+  $("#news").innerHTML=NEWS.map(newsItem).join("");
+  renderConfs();
+  $("#partners").innerHTML=PARTNERS.map(p=>`<div class="card partner"><div class="ini">${esc(p.a)}</div><div><h3 style="font-size:1rem">${esc(T(p.t))}</h3><p style="font-size:.9rem">${esc(T(p.d))}</p></div></div>`).join("");
+  $("#collabs").innerHTML=COLLABS.map(memberCard).join("");
+  const camera='<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h4l2-3h6l2 3h4v13H3z"/><circle cx="12" cy="13" r="4"/></svg>';
+  $("#gallery").innerHTML=GALLERY.map(g=>`<figure>${g.src?`<img src="${esc(g.src)}" alt="${esc(T(g.d))}" loading="lazy">`:`<div class="ph-img">${camera}</div>`}<figcaption><b>${esc(T(g.t))}</b>${esc(T(g.d))}</figcaption></figure>`).join("");
+  $("#homeNews").innerHTML=NEWS.slice(0,2).map(newsItem).join("");
+  $("#homePubs").innerHTML=PUBS.slice(0,2).map(p=>`<div lang="en" dir="ltr" style="text-align:start"><h3 style="font-family:var(--f-body);font-size:.98rem">${esc(p.t)}</h3><p style="font-size:.88rem">${esc(p.a)} · <i>${esc(p.j)}</i>, ${p.y}</p></div>`).join("");
+  $("#pubSearch").placeholder=T(UI.searchPh);
+  const sel=$("#cType"),si=sel.selectedIndex;sel.innerHTML=UI.subjects.map(o=>`<option>${esc(T(o))}</option>`).join("");if(si>0)sel.selectedIndex=si;
+  if(!$("#formNote").hidden)$("#formNote").textContent=T(UI.formNote);
+  document.title=lang==="ar"?"مختبر LASMAR – جامعة مولاي إسماعيل":"LASMAR – UMI";
+  renderPubs();renderMembers();route(false);applyTheme();drawFig();
+}
+
+$("#memberFilters").addEventListener("click",e=>{const b=e.target.closest("button");if(b){cat=b.dataset.c;renderMembers()}});
+$("#pubSearch").addEventListener("input",renderPubs);
+$("#confFilters").addEventListener("click",e=>{const b=e.target.closest("button");if(b){confType=b.dataset.t;renderConfs()}});
+document.querySelector(".lang").addEventListener("click",e=>{const b=e.target.closest("[data-lang]");if(!b)return;lang=b.dataset.lang;try{localStorage.setItem("lasmar-lang",lang)}catch(err){}render()});
+$("#themeSeg").addEventListener("click",e=>{const b=e.target.closest("[data-theme-set]");if(!b)return;theme=b.dataset.themeSet;try{localStorage.setItem("lasmar-theme",theme)}catch(err){}applyTheme()});
+$("#figSeg").addEventListener("click",e=>{const b=e.target.closest("[data-fig]");if(b){fig=b.dataset.fig;drawFig()}});
+$("#contactForm").addEventListener("submit",e=>{e.preventDefault();const n=$("#formNote");n.hidden=false;n.textContent=T(UI.formNote)});
+$("#yr").textContent=new Date().getFullYear();
+
+function route(scroll=true){
+  const ALIAS={laboratoire:"accueil",projets:"recherche",plateformes:"recherche",actualites:"conferences"};
+  let h=location.hash.slice(1);h=ALIAS[h]||h;
+  const v=NAVIDS.includes(h)?h:"accueil";
+  document.querySelectorAll(".view").forEach(s=>s.hidden=s.dataset.view!==v);
+  document.querySelectorAll("[data-nav]").forEach(a=>a.dataset.nav===v?a.setAttribute("aria-current","page"):a.removeAttribute("aria-current"));
+  $("#mainNav").classList.remove("open");$("#menuBtn").setAttribute("aria-expanded","false");
+  if(scroll){window.scrollTo(0,0);if(v==="accueil")drawFig()}
+}
+window.addEventListener("hashchange",()=>route());
+$("#menuBtn").addEventListener("click",()=>{const o=$("#mainNav").classList.toggle("open");$("#menuBtn").setAttribute("aria-expanded",o)});
+
+/* ---------- Figures (axes always left-to-right, as in scientific plots) ---------- */
+function hex(c){c=c.trim().replace("#","");return[0,2,4].map(i=>parseInt(c.slice(i,i+2),16))}
+function prep(){
+  const cv=$("#spec"),ctx=cv.getContext("2d"),cs=getComputedStyle(document.documentElement);
+  const g=v=>cs.getPropertyValue(v).trim();
+  ctx.setTransform(1,0,0,1,0,0);ctx.direction="ltr";ctx.fillStyle=g("--surface");ctx.fillRect(0,0,cv.width,cv.height);
+  return{cv,ctx,g,cs,lf:lang==="ar"?"'IBM Plex Sans Arabic',sans-serif":"'IBM Plex Mono',monospace"};
+}
+function drawFig(){
+  document.querySelectorAll("[data-fig]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.fig===fig));
+  const cap=T(fig==="xrf"?UI.figXrf:UI.figEem);$("#figCap").textContent=cap;$("#spec").setAttribute("aria-label",cap);
+  $("#figSeg").setAttribute("aria-label",{fr:"Choisir la figure",en:"Choose figure",ar:"اختيار الشكل"}[lang]);
+  fig==="xrf"?drawXRF():drawEEM();
+}
+function drawXRF(){
+  const{cv,ctx,g,lf}=prep();const W=cv.width,H=cv.height,L=58,R=14,Tp=24,B=48,pw=W-L-R,ph=H-Tp-B;
+  const e0=0,e1=14;
+  const lines=[["Si Kα",1.74,.07],["Ca Kα",3.69,.10],["Fe Kα",6.40,.22],["Fe Kβ",7.06,.05],["Cu Kα",8.05,1],["Cu Kβ",8.90,.17],["Pb Lα",10.55,.55],["Pb Lβ",12.61,.42],["Sn Lα",3.44,.06]];
+  const sig=e=>0.055+0.012*e;
+  const f=e=>{let v=0.035*Math.exp(-((e-9)**2)/40)*(e>1?1:e);for(const[,c,a]of lines)v+=a*Math.exp(-((e-c)**2)/(2*sig(c)**2));return v};
+  const N=pw,ys=[];let mx=0;for(let i=0;i<=N;i++){const v=f(e0+(i/N)*(e1-e0));ys.push(v);mx=Math.max(mx,v)}
+  const X=e=>L+(e-e0)/(e1-e0)*pw,Y=v=>Tp+ph-(v/(mx*1.12))*ph;
+  ctx.strokeStyle=g("--line");ctx.lineWidth=1;
+  for(let k=0;k<=4;k++){const y=Tp+ph*k/4;ctx.beginPath();ctx.moveTo(L,y+.5);ctx.lineTo(L+pw,y+.5);ctx.stroke()}
+  ctx.beginPath();ctx.moveTo(L,Tp+ph);ys.forEach((v,i)=>ctx.lineTo(L+i,Y(v)));ctx.lineTo(L+pw,Tp+ph);ctx.closePath();
+  ctx.fillStyle=g("--accent-soft");ctx.fill();
+  ctx.beginPath();ys.forEach((v,i)=>i?ctx.lineTo(L+i,Y(v)):ctx.moveTo(L,Y(v)));ctx.strokeStyle=g("--accent");ctx.lineWidth=2;ctx.stroke();
+  ctx.strokeStyle=g("--muted");ctx.lineWidth=1;ctx.strokeRect(L+.5,Tp+.5,pw-1,ph-1);
+  ctx.fillStyle=g("--muted");ctx.font="13px 'IBM Plex Mono',monospace";ctx.textAlign="center";
+  for(let e=0;e<=14;e+=2)ctx.fillText(e,X(e),Tp+ph+18);
+  ctx.font="13px "+lf;ctx.fillText(T(UI.xrfX),L+pw/2,H-8);
+  ctx.save();ctx.translate(18,Tp+ph/2);ctx.rotate(-Math.PI/2);ctx.fillText(T(UI.xrfY),0,0);ctx.restore();
+  ctx.font="600 12px 'IBM Plex Mono',monospace";
+  const lab=[["Si Kα",1.74],["Ca Kα",3.69],["Fe Kα",6.40],["Cu Kα",8.05],["Cu Kβ",8.90],["Pb Lα",10.55],["Pb Lβ",12.61]];
+  lab.forEach(([n,e],i)=>{const y=Y(f(e))-8;ctx.fillStyle=n.startsWith("Cu")||n.startsWith("Pb")?g("--ochre"):g("--ink");
+    const dy=n==="Cu Kβ"?-0:0;ctx.fillText(n,X(e)+(n==="Cu Kβ"?14:0),Math.max(Tp+12,y+dy))});
+}
+function drawEEM(){
+  const{cv,ctx,g,lf}=prep();
+  const stops=["--eem0","--eem1","--eem2","--eem3"].map(v=>hex(g(v)));
+  const W=cv.width,H=cv.height,L=58,R=14,Tp=14,B=48,pw=W-L-R,ph=H-Tp-B;
+  const ex0=230,ex1=450,em0=280,em1=600;
+  const peaks=[[275,305,.45,12,14],[275,340,.7,14,22],[250,450,1,16,55],[315,400,.55,18,40],[340,440,.8,22,50]];
+  const col=t=>{t=Math.min(1,Math.max(0,t));const s=t*3,i=Math.min(2,Math.floor(s)),f=s-i;return stops[i].map((a,k)=>Math.round(a+(stops[i+1][k]-a)*f))};
+  const img=ctx.createImageData(pw,ph);
+  for(let y=0;y<ph;y++){const ex=ex1-(y/ph)*(ex1-ex0);
+    for(let x=0;x<pw;x++){const em=em0+(x/pw)*(em1-em0);let v=0;
+      if(em>ex+15){for(const[pe,pm,a,se,sm]of peaks)v+=a*Math.exp(-((ex-pe)**2)/(2*se*se)-((em-pm)**2)/(2*sm*sm));}
+      const c=col(Math.floor(Math.min(v,1)*9)/9);const o=(y*pw+x)*4;
+      img.data[o]=c[0];img.data[o+1]=c[1];img.data[o+2]=c[2];img.data[o+3]=255;}}
+  ctx.putImageData(img,L,Tp);
+  ctx.strokeStyle=g("--muted");ctx.lineWidth=1;ctx.strokeRect(L+.5,Tp+.5,pw-1,ph-1);
+  ctx.fillStyle=g("--muted");ctx.font="13px 'IBM Plex Mono',monospace";ctx.textAlign="center";
+  for(let em=300;em<=600;em+=50)ctx.fillText(em,L+(em-em0)/(em1-em0)*pw,Tp+ph+18);
+  ctx.textAlign="right";for(let ex=250;ex<=450;ex+=50)ctx.fillText(ex,L-8,Tp+(ex1-ex)/(ex1-ex0)*ph+4);
+  ctx.font="13px "+lf;ctx.textAlign="center";ctx.fillText(T(UI.eemEm),L+pw/2,H-8);
+  ctx.save();ctx.translate(14,Tp+ph/2);ctx.rotate(-Math.PI/2);ctx.fillText(T(UI.eemEx),0,0);ctx.restore();
+  ctx.fillStyle=g("--ink");ctx.font="600 14px 'Sora',sans-serif";
+  [["B",275,305],["T",275,340],["A",250,450],["M",315,400],["C",340,440]].forEach(([n,ex,em])=>ctx.fillText(n,L+(em-em0)/(em1-em0)*pw,Tp+(ex1-ex)/(ex1-ex0)*ph+5));
+}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{applyTheme();drawFig()});
+new MutationObserver(m=>{if(m.some(r=>r.attributeName==="data-theme"))drawFig()}).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+document.fonts&&document.fonts.ready.then(drawFig);
+render();
+</script>
+
+</body>
+</html>
